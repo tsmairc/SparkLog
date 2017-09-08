@@ -5,7 +5,7 @@
 ![](https://github.com/tsmairc/SparkLog/blob/master/image/20170908135049.png?raw=true)
 
 ### 原理
-原有系统通过rocketmq发送消息，然后spark streaming接收信息并写入到hbase。spark job(基于spring的定时任务),定时跑任务从hbase读取信息分析写到mysql数据库中。
+原有系统通过rocketmq发送消息，然后spark streaming接收信息并写入到hbase。spark job(基于spring的定时任务),定时跑任务从hbase读取信息分析写到mysql数据库中。所有任务都是跑在yarn上。
 
 ### 部署环境
 cloudera_manager yarn spark hbase 
