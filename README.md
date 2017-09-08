@@ -10,7 +10,8 @@
 ### 部署环境
 cloudera_manager yarn spark hbase 
 
-### 代码
+### spark streaming代码
+spark streaming主要是通过接收器消息mq消息，然后通过spark sql 和 rdd去处理数据，最后写入hbase
 * 1.spark streaming接收器
 ```java
 public class JavaCustomReceiver extends Receiver<InterfaceLog>{
