@@ -126,8 +126,8 @@ public class MinSparkStream implements Serializable{
 		  //下面代码主要封装了spark sql的代码，从上面的spark临时表中获取数据，分析
           MinSparkHandler minSparkHandler = new MinSparkHandler();
           
-          //测试维度
-          minSparkHandler.dataHandler(sparkSession, Consts.APP_TABLE, SparkSqlFactory.getAppSqlFromMq("log_temp"));
+          //测试维度，处理数据并写入hbase
+          minSparkHandler.dataHandler(sparkSession, Consts.APP_TABLE, SparkSqlFactory.getAppSqlFromMq("log_temp"));
           
         }
         catch(Exception e){
@@ -161,11 +161,12 @@ public void dataHandler(SparkSession spark, final String table_type, String spar
     public void call(Iterator<Row> t) throws Exception{
       Map<String, List<Map<String, Object>>> rows = new HashMap<String, List<Map<String, Object>>>();
       while(t.hasNext()){
-		 //得到表的一行数据
+	//得到表的一行数据
         Row row = t.next();
-		//将行数据转换为mqp
+	//将行数据转换为mqp
         Map<String, Object> params = rowToMap(row, batch_id, table_type);
-      }
+	//写入hbase代码非常简单，这里不展示
+      }
     }
   }
 }
