@@ -1,7 +1,7 @@
 # SparkLog
 基于spark streaming日志设计
 
-驾构图：
+架构图：
 ![](https://github.com/tsmairc/SparkLog/blob/master/image/20170908135049.png?raw=true)
 
 ### 原理
