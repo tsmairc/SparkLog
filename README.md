@@ -148,7 +148,7 @@ public class MinSparkStream implements Serializable{
 
 ```
 
-* spark sql
+* 3.spark sql
 ```java
 public void dataHandler(SparkSession spark, final String table_type, String spark_sql){
   final String batch_id = xxx;
