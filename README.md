@@ -123,7 +123,7 @@ public class MinSparkStream implements Serializable{
           //Creates a temporary view using the DataFrame
           logsDataFrame.createOrReplaceTempView("log_temp");
 		  
-		  //下面代码主要封装了spark sql的代码，从上面的spark临时表中获取数据，分析
+	  //下面代码主要封装了spark sql的代码，从上面的spark临时表中获取数据，分析
           MinSparkHandler minSparkHandler = new MinSparkHandler();
           
           //测试维度，处理数据并写入hbase
@@ -179,9 +179,38 @@ spark job的任务是启动定时任务，以秒分钟天月等维度去分析�
 //获取hbase连接配置
 Configuration conf = HBaseUtils.getConfiguration();
 //直接从hbase获取数据
-JavaPairRDD<ImmutableBytesWritable, Result> hbaseRDD = new JavaHBaseContext(javaSparkContext, us).hbaseApiRDD(conf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
+JavaPairRDD<ImmutableBytesWritable, Result> hbaseRDD = 
+new JavaHBaseContext(javaSparkContext, us).hbaseApiRDD(conf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
 
+//创建临时表
+createDataFrame(sqlContext, hbaseRDD, table_month);
+//按xx纬度统计
+countByConf(sqlContext, table_month);
 ```
 
 ### 分钟维度日志分析
-
+```java
+//spark sql
+Dataset<Row> countData = sqlContext.sql(spark_sql);
+//采用foreachPartition方式，根据task个数进行分布式处理
+countData.foreachPartition(new ForeachPartitionFunction<Row>(){
+  @Override
+  public void call(Iterator<Row> t) throws Exception{
+    List<Log> inertParams = new ArrayList<Log>();
+    List<Log> delParams = new ArrayList<Log>();
+    while(t.hasNext()){
+      Row row = t.next();
+      String begin_time = row.getString(10);
+      if(begin_time == null || begin_time.length() < 6 || !table_month.equals(begin_time.substring(0, 6))){
+        continue;
+      }
+      //将row中的数据组装成列表对象
+      installBatchParams(row, inertParams, delParams, count_type);
+    }
+    //统计数据写到关系型数据库
+    if(inertParams.size() > 0){
+      dao.operStaticTable(table_name, delParams, inertParams);
+    }
+  }
+});
+```
