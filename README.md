@@ -163,7 +163,7 @@ public void dataHandler(SparkSession spark, final String table_type, String spar
       while(t.hasNext()){
 	//得到表的一行数据
         Row row = t.next();
-	//将行数据转换为mqp
+	//将行数据转换为map
         Map<String, Object> params = rowToMap(row, batch_id, table_type);
 	//写入hbase代码非常简单，这里不展示
       }
