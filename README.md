@@ -189,6 +189,7 @@ countByConf(sqlContext, table_month);
 ```
 
 ### 分钟维度日志分析
+下面是关键代码，这里的原理上面spark job提过，就是quartz定时任务启动当前类，然后读取hbase，通过spark sql分析生成临时表，最后整理数据写入mysql
 ```java
 //spark sql
 Dataset<Row> countData = sqlContext.sql(spark_sql);
